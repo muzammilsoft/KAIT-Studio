@@ -5,10 +5,6 @@ plugins {
 group = "com.kgsoft.kait.studio"
 version = "0.1.0"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     jvmToolchain(17)
 }
