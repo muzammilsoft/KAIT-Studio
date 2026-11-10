@@ -10,7 +10,7 @@ First release.
 
 - On-device runner for TAIT `.npz` mini models (single-block MiniGPT engine in Kotlin).
 - Bundled model TinyBili (`tinyGPT0.1.npz`, 1,072,206 bytes), trained with TAIT 2.3.0 on `mixed-1.jsonl` (6666 examples, 50 epochs).
-- Four tabs: Chat, Gallery, Datasets, Settings.
+- Four tabs: Chat, Models, Datasets, More.
 - Import of user-provided `.npz` models from device storage.
 - Generation controls: temperature, top-k, top-p.
 - Thinking / answer split in chat output.
