@@ -1,0 +1,12 @@
+# Gradle / Android build outputs
+.gradle/
+build/
+app/build/
+engine/build/
+local.properties
+*.iml
+.idea/
+.DS_Store
+# Signing: the debug keystore IS committed on purpose (test signing only).
+# Never commit a production keystore.
+!app/debug.keystore
