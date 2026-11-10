@@ -16,7 +16,9 @@ android {
     }
 
     signingConfigs {
-        create("debug") {
+        // AGP already creates a "debug" signing config; configure it
+        // instead of creating a second one with the same name.
+        getByName("debug") {
             storeFile = file("debug.keystore")
             storePassword = "android"
             keyAlias = "kait-debug"
