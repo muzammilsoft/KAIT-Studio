@@ -1,0 +1,14 @@
+{
+  "tait_version": "2.3.0",
+  "data": "mixed-1.jsonl",
+  "examples": 6666,
+  "epochs": 50,
+  "final_loss": 0.490027681430927,
+  "val_loss": 1.0366690878082827,
+  "d_model": 64,
+  "d_ff": 128,
+  "vocab_size": 1003,
+  "block_size": 64,
+  "seed": 42,
+  "created_at": "2026-11-05T04:57:54.125953+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "datasets": [
+    {
+      "description": "The training dataset TinyBili was trained on (mixed-1.jsonl). The sample file published in the TAIT repository at examples/datasets/mixed.jsonl contains 10 lines; the full training file used for TinyBili (mixed-1.jsonl) had 6666 examples.",
+      "download_url": "https://raw.githubusercontent.com/muzammilsoft/tait/main/examples/datasets/mixed.jsonl",
+      "fields": [
+        "prompt",
+        "reasoning",
+        "response"
+      ],
+      "id": "mixed",
+      "line_count": 10,
+      "name": "mixed",
+      "sample": [
+        {
+          "prompt": "شنو عاصمة السودان؟",
+          "reasoning": "السؤال عن عاصمة السودان، والمدينة المعروفة بأنها العاصمة هي الخرطوم.",
+          "response": "عاصمة السودان هي الخرطوم."
+        },
+        {
+          "prompt": "What is Python used for?",
+          "reasoning": "Python is a general-purpose language commonly used for web development, automation, data work, and AI.",
+          "response": "Python is used for many things, including automation, web applications, data analysis, and artificial intelligence."
+        },
+        {
+          "prompt": "كيفنك يا زول؟",
+          "reasoning": "دي تحية سودانية وسؤال عن الحال، فالرد الطبيعي يكون تحية وسؤالًا مقابلًا عن الحال.",
+          "response": "تمام يا زول، الحمد لله. إنت كيفنك؟"
+        }
+      ],
+      "source_url": "https://github.com/muzammilsoft/tait/blob/main/examples/datasets/mixed.jsonl"
+    }
+  ],
+  "version": 1
+}

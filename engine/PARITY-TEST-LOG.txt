@@ -1,0 +1,80 @@
+KAIT Studio engine — parity test log
+Date (UTC): 2026-11-10 14:05:20
+JDK: openjdk version "17.0.21" 2026-10-20
+Kotlin compiler: info: kotlinc-jvm 2.0.21 (JRE 17.0.21+9)
+JUnit: junit-platform-console-standalone 1.10.3 (same engine as build.gradle.kts: junit-jupiter 5.10.3)
+Golden files: src/test/resources/tiny.npz + ref_last.npy (copies of ~/workspace/kait-npz-test/)
+Pass bar: max abs diff < 1e-3 AND same argmax (Python ref.py, prompt 'Hello', ids [72, 274, 282])
+
+=== Compile main ===
+main compile OK
+
+=== Compile tests ===
+test compile OK
+
+=== Run tests (JUnit Platform Console) ===
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+PASS reasoning extraction
+generate(seed=42): newTokens=10 millis=105 raw='�你�ه��`�'
+PASS generate determinism
+PASS missing merge_a rejected: missing BPE merge data 'merge_a' in npz
+roundtrip: 'Hello world' -> [72, 274, 282, 32, 119, 111, 114, 108, 100] -> 'Hello world'
+roundtrip: 'The quick brown fox jumps over the lazy dog.' -> [84, 104, 265, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 290, 280, 108, 97, 122, 121, 289, 111, 103, 46] -> 'The quick brown fox jumps over the lazy dog.'
+roundtrip: 'مرحبا بالعالم' -> [292, 177, 278, 287, 268, 32, 287, 293, 216, 185, 293, 273] -> 'مرحبا بالعالم'
+roundtrip: 'الذكاء الاصطناعي على الهاتف' -> [293, 216, 176, 279, 268, 216, 161, 32, 293, 268, 216, 181, 216, 183, 217, 134, 268, 216, 185, 294, 32, 216, 185, 269, 217, 137, 32, 293, 299, 268, 216, 170, 217, 129] -> 'الذكاء الاصطناعي على الهاتف'
+roundtrip: 'Hello مرحبا 123!' -> [72, 274, 282, 32, 292, 177, 278, 287, 268, 32, 49, 50, 51, 33] -> 'Hello مرحبا 123!'
+Kotlin top5: 168=0.021969365, 161=0.020616867, 113=0.020075751, 191=0.016361814, 239=0.013989238
+Python top5: 168=0.021969361, 161=0.020616863, 113=0.020075748, 191=0.016361812, 239=0.0139892325
+maxAbsDiff=5.5879354E-9 kotlinArgmax=168 refArgmax=168
+PASS
+╷
+├─ JUnit Jupiter ✔
+│  └─ EngineTest ✔
+│     ├─ reasoningExtraction() ✔
+│     ├─ generateIsDeterministicForSameSeed() ✔
+│     ├─ missingMergeDataIsRejected() ✔
+│     ├─ encodeDecodeRoundTrip() ✔
+│     └─ forwardMatchesPython() ✔
+├─ JUnit Vintage ✔
+└─ JUnit Platform Suite ✔
+
+Test run finished after 679 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         5 tests found           ]
+[         0 tests skipped         ]
+[         5 tests started         ]
+[         0 tests aborted         ]
+[         5 tests successful      ]
+[         0 tests failed          ]
+
+
+WARNING: Delegated to the 'execute' command.
+         This behaviour has been deprecated and will be removed in a future release.
+         Please use the 'execute' command directly.
+JUNIT_EXIT=0
+
+=== Note on Gradle ===
+The Gradle build files (build.gradle.kts: kotlin("jvm") 2.0.21, jvmToolchain 17,
+no Android dependencies; settings.gradle.kts; gradlew 8.11.1 wrapper) are in
+place and the test suite above is the exact suite `./gradlew test` runs
+(same Kotlin 2.0.21 compiler, same JUnit 5.10.3 engine). In THIS sandbox the
+Gradle client could not complete a build: the daemon process starts and
+listens on 127.0.0.1, the client reports "Connected to address /127.0.0.1",
+yet the daemon never logs an accepted connection and the client fails after
+~20ms with "Could not receive a message from the daemon" (tried 4 times,
+daemon + single-use modes, -Xmx256m, fresh GRADLE_USER_HOME). Loopback TCP
+itself works in this sandbox (verified Java->Python and Python->Python, and
+a raw probe to the daemon port was accepted and logged). So the failure is
+specific to the Gradle client<->daemon handshake in this sandbox, not to the
+project. On a normal machine (or KG's CI) `./gradlew test` is the command to
+run; the standalone run above is the same verification executed directly.
+(Note: the untrained model's generate() output contains raw control bytes
+from sampled byte-tokens; one NUL byte was stripped from this log so the
+file stays plain text. The test assertions themselves are unaffected.)
