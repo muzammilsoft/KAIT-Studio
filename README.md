@@ -69,6 +69,18 @@ generate your own release key for that.
 
 Requires JDK 17. See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
+## Releases
+
+APKs are attached to GitHub releases by the [Release workflow](.github/workflows/release.yml),
+never uploaded by hand: the local GitHub credential cannot reach the asset-upload
+server, but the workflow runs on GitHub itself with `GITHUB_TOKEN`.
+
+- **New version:** create the release (tag `vX.Y.Z`, Arabic changelog in the body),
+  then run the workflow manually with that tag, or simply push the tag — the
+  workflow builds both APKs and attaches them to the release.
+- **Existing release missing its APKs:** run the workflow manually
+  (Actions → Release → Run workflow) and give the release tag.
+
 ## Engine
 
 The inference engine is documented in [docs/ENGINE.md](docs/ENGINE.md): the `.npz`
