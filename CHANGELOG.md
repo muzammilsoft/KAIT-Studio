@@ -2,6 +2,12 @@
 
 All notable changes to KAIT Studio will be documented in this file.
 
+## [0.1.1] - 2026-11-10
+
+### Fixed
+
+- Model loading crashed on Android 10 and older with `NoSuchMethodError: readAllBytes` on `ZipInputStream` (Java 9 API, Android only provides it from API 33). The NPZ reader now uses Kotlin's buffered `readBytes()`, which works on every supported API level. Found by a crash on a Huawei Y8p (Android 10) when loading the bundled TinyBili model.
+
 ## [0.1.0] - 2026-11-10
 
 First release.

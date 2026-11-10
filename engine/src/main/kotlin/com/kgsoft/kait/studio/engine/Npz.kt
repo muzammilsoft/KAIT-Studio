@@ -23,7 +23,12 @@ fun readNpz(input: InputStream): Map<String, Npy> {
             if (!entry.isDirectory) {
                 sawAny = true
                 val name = entry.name.removeSuffix(".npy")
-                val bytes = zip.readAllBytes()
+                // NOTE: do NOT use InputStream.readAllBytes() here. It is a
+                // Java 9 API that Android only provides from API 33, and it
+                // crashes with NoSuchMethodError on older phones (seen on
+                // Android 10 / API 29). Kotlin's readBytes() loops with a
+                // buffer and works on every API level we support.
+                val bytes = zip.readBytes()
                 out[name] = try {
                     parseNpy(bytes)
                 } catch (e: ModelLoadException) {
