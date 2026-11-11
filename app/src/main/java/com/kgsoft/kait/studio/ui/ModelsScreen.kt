@@ -180,6 +180,16 @@ fun ModelCard(
                     model.finalLoss,
                 )
             )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(
+                    if (model.supportsThinking) {
+                        R.string.models_thinking_yes
+                    } else {
+                        R.string.models_thinking_no
+                    }
+                )
+            )
             if (isActive) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = stringResource(R.string.models_active))

@@ -37,6 +37,12 @@ enum class Tab {
 class StudioState(val context: Context) {
     var model by mutableStateOf<LoadedModel?>(null)
     var modelName by mutableStateOf("")
+    /**
+     * Whether the loaded model supports thinking. Thinking is a per-model
+     * capability declared in the gallery (`supports_thinking`); it is never
+     * assumed. False means the chat shows the plain answer only.
+     */
+    var modelSupportsThinking by mutableStateOf(false)
     var modelLoading by mutableStateOf(false)
     var modelError by mutableStateOf("")
     val messages = mutableStateListOf<ChatMessage>()
@@ -68,11 +74,21 @@ class StudioState(val context: Context) {
             }
             model = loaded
             modelName = "TinyBili"
+            modelSupportsThinking = gallerySupportsThinking("tinybili")
         } catch (e: Exception) {
             modelError = e.toString()
         } finally {
             modelLoading = false
         }
+    }
+
+    /** Thinking support of a gallery model, matched by id or file name. */
+    private fun gallerySupportsThinking(id: String, fileName: String = ""): Boolean {
+        return runCatching {
+            com.kgsoft.kait.studio.data.Repository.loadGalleryModels(context)
+                .firstOrNull { it.id == id || (fileName.isNotEmpty() && it.fileName == fileName) }
+                ?.supportsThinking ?: false
+        }.getOrDefault(false)
     }
 
     /** Load a model file previously downloaded to filesDir/models. */
@@ -87,6 +103,10 @@ class StudioState(val context: Context) {
             }
             model = loaded
             modelName = file.nameWithoutExtension
+            // A file with no gallery entry declares nothing, so it is
+            // treated as a non-thinking model. A downloaded gallery model
+            // keeps the thinking flag from its gallery entry.
+            modelSupportsThinking = gallerySupportsThinking("", file.name)
         } catch (e: Exception) {
             modelError = e.toString()
         } finally {
@@ -103,11 +123,14 @@ class StudioState(val context: Context) {
             val result = withContext(Dispatchers.Default) {
                 current.generate(prompt, generationConfig())
             }
+            // Thinking is shown only for models that declare it. For any
+            // other model the whole generated text is the answer, with no
+            // think-tag parsing assumed.
             messages.add(
                 ChatMessage(
                     role = "model",
-                    text = result.answer,
-                    reasoning = result.reasoning,
+                    text = if (modelSupportsThinking) result.answer else result.raw,
+                    reasoning = if (modelSupportsThinking) result.reasoning else "",
                     millis = result.millis,
                     newTokens = result.newTokens,
                 )

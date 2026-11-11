@@ -27,6 +27,8 @@
     <string name="models_use_bundled">使用内置模型</string>
     <string name="models_activate">启用</string>
     <string name="models_download">下载</string>
+    <string name="models_thinking_yes">支持思考</string>
+    <string name="models_thinking_no">不支持思考</string>
     <string name="datasets_title">训练数据集</string>
     <string name="datasets_stats">%1$d 行 · 字段：%2$s</string>
     <string name="datasets_sample_prompt">问：%1$s</string>

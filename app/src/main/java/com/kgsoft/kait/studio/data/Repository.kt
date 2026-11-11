@@ -43,6 +43,7 @@ object Repository {
                     epochs = o.optInt("epochs"),
                     finalLoss = o.optDouble("final_loss"),
                     valLoss = o.optDouble("val_loss"),
+                    supportsThinking = o.optBoolean("supports_thinking", false),
                 )
             )
         }

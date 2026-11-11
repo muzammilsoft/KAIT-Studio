@@ -27,6 +27,8 @@
     <string name="models_use_bundled">Use bundled model</string>
     <string name="models_activate">Activate</string>
     <string name="models_download">Download</string>
+    <string name="models_thinking_yes">Supports thinking</string>
+    <string name="models_thinking_no">No thinking</string>
     <string name="datasets_title">Training datasets</string>
     <string name="datasets_stats">%1$d lines · fields: %2$s</string>
     <string name="datasets_sample_prompt">Q: %1$s</string>

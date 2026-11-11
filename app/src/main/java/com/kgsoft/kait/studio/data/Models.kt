@@ -18,6 +18,13 @@ data class GalleryModel(
     val epochs: Int,
     val finalLoss: Double,
     val valLoss: Double,
+    /**
+     * Whether this model was trained to emit thinking (`<think>…</think>`)
+     * before its answer. False by default: thinking is a per-model
+     * capability, never assumed. TinyBili, for example, was trained on
+     * plain Q&A and does not think.
+     */
+    val supportsThinking: Boolean = false,
 )
 
 /** One entry of the curated datasets gallery (assets/datasets.json). */

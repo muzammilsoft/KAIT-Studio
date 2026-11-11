@@ -85,7 +85,7 @@ is reached. The prompt is truncated to `block_size` tokens from the left
 - **temperature** (default 0.7): logits are divided by the temperature
   before softmax. Lower values make output more deterministic; `0` means
   greedy decoding (always pick the highest-logit token).
-- **top_k** (default 40): only the `k` highest-logit tokens are kept;
+- **top_k** (default 8): only the `k` highest-logit tokens are kept;
   the rest are set to −∞ before sampling. `0` disables top-k filtering.
 - **top_p** (nucleus sampling, default 0.9): tokens are kept in descending
   probability order until their cumulative probability reaches `p`;
@@ -96,15 +96,22 @@ the remaining distribution.
 
 ## 4. Thinking / answer split
 
-TinyBili was trained on examples with three fields: `prompt`, `reasoning`,
-`response`. At generation time the model emits its reasoning first and then
-its answer, separated by the separator token (`sep_id`). KAIT Studio splits
-the generated text at that separator:
+Thinking is a per-model capability, not a default part of messaging. A
+model supports thinking only when its gallery entry declares
+`"supports_thinking": true` in `assets/gallery.json`. TinyBili does not:
+it was trained on plain Q&A (`mixed-1.jsonl`) with no reasoning format,
+so its chat shows the plain answer only and never a thinking card.
 
-- text before the separator → shown as **Thinking**;
-- text after the separator → shown as the **Answer**.
+For a model that does declare thinking support, generation output in
+TAIT's reasoning format (`<think>…</think><answer>…</answer>`, see
+`tait/core/reasoning.py`) is split by `extractReasoning`:
 
-If no separator is generated, the whole output is shown as the answer.
+- text between `<think>` and `</think>` → shown as **Thinking**;
+- text after `</think>` (inside `<answer>` tags if present) → shown as the
+  **Answer**.
+
+For a model without thinking support the whole generated text is the
+answer, with no think-tag parsing assumed.
 
 ## 5. Parity test result
 

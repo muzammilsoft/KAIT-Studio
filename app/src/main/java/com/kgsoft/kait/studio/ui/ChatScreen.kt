@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
@@ -34,8 +35,10 @@ import com.kgsoft.kait.studio.data.ChatMessage
 import kotlinx.coroutines.launch
 
 /**
- * Chat with a TAIT model. The model's thinking (<think>) is shown in its
- * own collapsible card, never mixed into the answer text.
+ * Chat with a TAIT model. Your messages sit on one side, the model's on
+ * the other. Thinking (`<think>`) is shown in its own collapsible card,
+ * never mixed into the answer text — and only for models that declare
+ * thinking support; other models show the plain answer only.
  */
 @Composable
 fun ChatScreen(state: StudioState, modifier: Modifier = Modifier) {
@@ -54,7 +57,14 @@ fun ChatScreen(state: StudioState, modifier: Modifier = Modifier) {
             Text(
                 text = if (model != null) {
                     state.modelName + "  ·  vocab " + model.vocabSize +
-                        "  ·  d " + model.dModel
+                        "  ·  d " + model.dModel + "  ·  " +
+                        stringResource(
+                            if (state.modelSupportsThinking) {
+                                R.string.models_thinking_yes
+                            } else {
+                                R.string.models_thinking_no
+                            }
+                        )
                 } else {
                     stringResource(R.string.chat_no_model)
                 }
@@ -111,11 +121,29 @@ fun ChatScreen(state: StudioState, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(state.messages) { message ->
-                MessageCard(message = message)
+                // Your messages on one side, the model's on the other.
+                // Arrangement.Start/End follow the layout direction, so
+                // this stays correct in both LTR and RTL languages.
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = if (message.role == "user") {
+                        Arrangement.End
+                    } else {
+                        Arrangement.Start
+                    },
+                ) {
+                    MessageCard(
+                        message = message,
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                    )
+                }
             }
             if (state.isGenerating) {
                 item {
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
                         CircularProgressIndicator()
                     }
                 }
@@ -153,15 +181,17 @@ fun ChatScreen(state: StudioState, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MessageCard(message: ChatMessage) {
+fun MessageCard(message: ChatMessage, modifier: Modifier = Modifier) {
     var showReasoning by remember { mutableStateOf(false) }
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = if (message.isError) {
-            CardDefaults.cardColors()
-        } else {
-            CardDefaults.cardColors()
-        },
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = if (message.role == "user") {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
+        ),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(

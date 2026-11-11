@@ -2,6 +2,14 @@
 
 All notable changes to KAIT Studio will be documented in this file.
 
+## [0.1.2] - 2026-11-11
+
+### Changed
+
+- Language picker in the More tab is now a dropdown menu instead of four buttons in a row.
+- Chat messages are now bubbles on opposite sides: your messages on one side, the model's on the other (with a different colour each), instead of full-width cards stacked in one column.
+- Thinking is now a per-model capability, not a default part of messaging. Each gallery model declares `supports_thinking` in `gallery.json`; the gallery card and the chat header say whether a model supports thinking. Models without it show the plain answer only, with no thinking card. TinyBili does not support thinking.
+
 ## [0.1.1] - 2026-11-10
 
 ### Fixed
